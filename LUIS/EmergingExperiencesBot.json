@@ -1,0 +1,486 @@
+{
+  "luis_schema_version": "1.3.0",
+  "name": "EmergingExperiencesBot",
+  "desc": "Bot for the Emerging Experiences team",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "Link"
+    },
+    {
+      "name": "Salutation"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "Gratitude"
+    },
+    {
+      "name": "Definition"
+    },
+    {
+      "name": "Help"
+    }
+  ],
+  "entities": [
+    {
+      "name": "Link"
+    }
+  ],
+  "composites": [],
+  "bing_entities": [
+    "encyclopedia"
+  ],
+  "actions": [
+    {
+      "actionName": "Definition",
+      "intentName": "Definition",
+      "actionParameters": [
+        {
+          "parameterName": "Topic",
+          "entityName": "encyclopedia",
+          "required": true
+        }
+      ]
+    },
+    {
+      "actionName": "Link",
+      "intentName": "Link",
+      "actionParameters": [
+        {
+          "parameterName": "Link",
+          "entityName": "Link",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "where is microsoft?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "hello bot",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "what is something",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "what can i do?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "help me",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "how is microsoft?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "define something",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "info about microsoft",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "can you tell me about microsoft?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what can you tell me about microsoft?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "hi there",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "get help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what is microsoft?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "what do you do?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "good evening",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "good day",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "greetings",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "define microsoft",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "how big is microsoft?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "what are you?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "options",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what can you do?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what's up?",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "yo",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "i need help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "hey there",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "good morning",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "how many employees does microsoft have?",
+      "intent": "Definition",
+      "entities": []
+    },
+    {
+      "text": "show me a link about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 5,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "link me something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "do you have a link about something?",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 6,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "search links for something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 3,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "search a link for something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "get link something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "show me a link for something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 5,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "get me a link for something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 5,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "hello there",
+      "intent": "Salutation",
+      "entities": []
+    },
+    {
+      "text": "what do people say about something?",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 5,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "show news about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 3,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "what is new about something?",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "show articles about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 3,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "give me links about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "get me links about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "links for something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "articles for something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "articles about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "news about something",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Link",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "thank you",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "thanks",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "great, thank you",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "great",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "cool",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "very nice",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "nice",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "cool, thanks",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "nice, thank you",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "that's great",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "i like it",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "i like this",
+      "intent": "Gratitude",
+      "entities": []
+    },
+    {
+      "text": "like this",
+      "intent": "Gratitude",
+      "entities": []
+    }
+  ]
+}

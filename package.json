@@ -1,0 +1,22 @@
+{
+  "name": "ee-slack-bot",
+  "version": "1.0.0",
+  "description": "This is an R&D bot that lives in the Emerging Experiences Slack team.",
+  "main": "server.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "botframework",
+    "pinboard.in"
+  ],
+  "author": "Razorfish Emerging Experiences",
+  "license": "MIT",
+  "homepage": "http://www.emergingexperiences.com/",
+  "dependencies": {
+    "botbuilder": "^1.0.1",
+    "node-pinboard": "^1.0.0",
+    "restify": "^4.1.1",
+    "winston": "^2.2.0"
+  }
+}
