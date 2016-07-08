@@ -15,6 +15,7 @@
   "homepage": "http://www.emergingexperiences.com/",
   "dependencies": {
     "botbuilder": "^1.0.1",
+    "easypedia": "^4.0.1",
     "node-pinboard": "^1.0.0",
     "restify": "^4.1.1",
     "winston": "^2.2.0"

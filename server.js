@@ -27,6 +27,10 @@ var builder = require('botbuilder');
 // https://www.npmjs.com/package/node-pinboard
 var Pinboard = require('node-pinboard');
 
+// include wikipedia api
+// https://www.npmjs.com/package/easypedia
+var easypedia = require("easypedia");
+
 // get app id and secret from server environment
 // this avoids having to store the secret in code
 // you can manage it in the Azure dashboard
@@ -127,8 +131,6 @@ dialog.on('Definition', [
         // extract entity from intent
         var task = builder.EntityRecognizer.findEntity(args.entities, 'Topic');
 
-        winston.info(task);
-
         // the link should be included in the Link entity
         if (!task) {
             // if none was given, apologise and ask again
@@ -141,32 +143,16 @@ dialog.on('Definition', [
     function (session, results) {
         winston.info('# Identified definition request with given entity');
         if (results.response) {
-            // this will get all bookmarks stored in the pinboard account
-            // we also add the tag filter to only receive matching entries
-            pinboard.all({ tag: results.response }, function (err, res) {
+            // this will get info from wikipedia for the given query
+            easypedia(results.response, function (err, res) {
                 // check if a proper response came back
                 if (res) {
                     // check if the response actually contains posts
-                    if (res.length > 0) {
-                        winston.info('# Found ' + res.length + ' entries');
+                    if (typeof res._text.Intro[0].text !== 'undefined') {
+                        winston.info('# Found wikipedia entry');
 
-                        // storing search term in user data
-                        // this contains all search results and is used when the user requests another link from the results
-                        session.userData.search = results.response;
-
-                        // reset current index
-                        // this tracks which link the user currently sees
-                        session.userData.searchResultIndex = 0;
-
-                        // store complete result list
-                        session.userData.searchResultList = res;
-
-                        // responding with first link result
-                        resultLink = 'How about ';
-                        resultLink += res[0].href + "\n";
-                        resultLink += res[0].description + "\n";
-                        resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
-                        session.send(resultLink);
+                        // send wikipedia entry
+                        session.send(res._text.Intro[0].text);
                     } else {
                         winston.info('# Got a response, but it does not seem like there are posts');
                         session.send('Hm, I don\'t think I have any link for that, sorry');
@@ -191,22 +177,27 @@ dialog.on('Next', [
         next({});
     },
     function (session, results) {
-        winston.info('# Selecting next result');
+        winston.info('# Selecting next result. Current index ' + session.userData.searchResultIndex);
 
-        // switch to next result
-        if ((session.userData.searchResultIndex + 1) <= session.userData.searchResultList.length) {
-            session.userData.searchResultIndex += 1;
+        if (typeof session.userData.searchResultIndex !== 'undefined') {
+            // switch to next result
+            if ((session.userData.searchResultIndex + 1) <= session.userData.searchResultList.length) {
+                session.userData.searchResultIndex += 1;
+            } else {
+                session.userData.searchResultIndex = 0;
+            }
+
+            // responding with next result
+            // this draws the result from the search results cached in the user session
+            resultLink = 'How about ';
+            resultLink += session.userData.searchResultList[session.userData.searchResultIndex].href + "\n";
+            resultLink += session.userData.searchResultList[session.userData.searchResultIndex].description + "\n";
+            resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
+            session.send(resultLink);
         } else {
-            session.userData.searchResultIndex = 0;
+            winston.info('# No results in the cache');
+            session.send("Somehow I didn't get what you are looking for, sorry. Can you please try again?");
         }
-
-        // responding with next result
-        // this draws the result from the search results cached in the user session
-        resultLink = 'How about ';
-        resultLink += session.userData.searchResultList[session.userData.searchResultIndex].href + "\n";
-        resultLink += session.userData.searchResultList[session.userData.searchResultIndex].description + "\n";
-        resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
-        session.send(resultLink);
     }
 ]);
 
