@@ -9,6 +9,10 @@
 // Author: Dirk Songuer (dirk.songuer@razorfish.de)
 // ************************************************ //
 
+process.env.PINBOARD_APITOKEN = 'DirkSonguer:94181CF6691F51C4891B';
+process.env.LUIS_APP_ID = '655a8e18-820b-4eef-ba9f-b8f12692db51';
+process.env.LUIS_SUBSCRIPTION_KEY = 'c01e068a748f45918abc029e69c1ffd4';
+
 // include winston logging
 var winston = require('winston');
 winston.level = 'debug';
@@ -54,7 +58,7 @@ dialog.on('Link', [
         winston.info('# Identified link request');
 
         // extract entity from intent
-        var task = builder.EntityRecognizer.findEntity(args.entities, 'Link');
+        var task = builder.EntityRecognizer.findEntity(args.entities, 'Topic');
 
         // the link should be included in the Link entity
         if (!task) {
@@ -67,6 +71,75 @@ dialog.on('Link', [
     },
     function (session, results) {
         winston.info('# Identified link request with given entity');
+        if (results.response) {
+            // this will get all bookmarks stored in the pinboard account
+            // we also add the tag filter to only receive matching entries
+            pinboard.all({ tag: results.response }, function (err, res) {
+                // check if a proper response came back
+                if (res) {
+                    // check if the response actually contains posts
+                    if (res.length > 0) {
+                        winston.info('# Found ' + res.length + ' entries');
+
+                        // storing search term in user data
+                        // this contains all search results and is used when the user requests another link from the results
+                        session.userData.search = results.response;
+
+                        // reset current index
+                        // this tracks which link the user currently sees
+                        session.userData.searchResultIndex = 0;
+
+                        // store complete result list
+                        session.userData.searchResultList = res;
+
+                        // responding with first link result
+                        resultLink = 'How about ';
+                        resultLink += res[0].href + "\n";
+                        resultLink += res[0].description + "\n";
+                        resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
+                        session.send(resultLink);
+                    } else {
+                        winston.info('# Got a response, but it does not seem like there are posts');
+                        session.send('Hm, I don\'t think I have any link for that, sorry');
+                    }
+                } else {
+                    // something went wrong
+                    winston.info('# Response did throw an error: ' + err);
+                    session.send('Oh, something went wrong (' + err + ')');
+                }
+            });
+        } else {
+            // no entity, hence no topic to search a link for
+            winston.info('# Did not get an entity for this intent');
+            session.send("Somehow I didn't get what you are looking for, sorry. Can you please try again?");
+        }
+    }
+]);
+
+
+// LUIS identified a definition request intent
+dialog.on('Definition', [
+    function (session, args, next) {
+        winston.info('# Identified definition request');
+
+        winston.info(args.entities);
+
+        // extract entity from intent
+        var task = builder.EntityRecognizer.findEntity(args.entities, 'Topic');
+
+        winston.info(task);
+
+        // the link should be included in the Link entity
+        if (!task) {
+            // if none was given, apologise and ask again
+            next({});
+        } else {
+            // jump to next stage in dialog to show result
+            next({ response: task.entity });
+        }
+    },
+    function (session, results) {
+        winston.info('# Identified definition request with given entity');
         if (results.response) {
             // this will get all bookmarks stored in the pinboard account
             // we also add the tag filter to only receive matching entries
