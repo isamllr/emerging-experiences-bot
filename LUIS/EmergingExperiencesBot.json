@@ -612,6 +612,215 @@
       "text": "what else?",
       "intent": "Next",
       "entities": []
+    },
+    {
+      "text": "get me news about google",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "news about google",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "news about oracle",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "news about razorfish",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "links about google",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "links about oracle",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "links about razorfish",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "show me links about chrome",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "show me links about firefox",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "link me google",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "link me youtube",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "show me news about youtube",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 4,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "can you define google",
+      "intent": "Definition",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 3,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "define me google",
+      "intent": "Definition",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "define me microsoft",
+      "intent": "Definition",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "define me chrome",
+      "intent": "Definition",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "define me oracle",
+      "intent": "Definition",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "link me heise",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 2,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "get me a link about google",
+      "intent": "Link",
+      "entities": [
+        {
+          "entity": "Topic",
+          "startPos": 5,
+          "endPos": 5
+        }
+      ]
     }
   ]
 }
