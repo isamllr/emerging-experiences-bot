@@ -24,13 +24,13 @@ var Pinboard = require('node-pinboard');
 // include wikipedia api
 // https://www.npmjs.com/package/easypedia
 var easypedia = require("easypedia");
-
+*/
 // setup restify server
 var server = restify.createServer();
 server.listen(3798, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
-
+/*
 // get app id and password from server environment
 // this avoids having to store the secret in code
 // you can manage it in the Azure dashboard
