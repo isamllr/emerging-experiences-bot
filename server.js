@@ -16,7 +16,7 @@ var restify = require('restify');
 // include ms botbuilder sdk
 // this will provide all functionality around bot workflows
 var builder = require('botbuilder');
-
+/*
 // include pinboard api
 // https://www.npmjs.com/package/node-pinboard
 var Pinboard = require('node-pinboard');
@@ -202,7 +202,7 @@ intents.matches('Help', [
         session.send("I can help you define things and get more information about them. For example say 'What is XYZ?' to get a overview of what it is. You can also say 'What do people say about XYZ?' to get some links about the topic.");
     }
 ]);
-
+*/
 // serve a static web page as hello world confirmation
 // it also contains a web chat interface to this bot
 // note that to use the web chat, you need to add this endpoint
