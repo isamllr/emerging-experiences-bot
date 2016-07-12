@@ -9,18 +9,12 @@
 // Author: Dirk Songuer (dirk.songuer@razorfish.de)
 // ************************************************ //
 
-process.env.PINBOARD_APITOKEN = 'DirkSonguer:94181CF6691F51C4891B';
-process.env.LUIS_APP_ID = '655a8e18-820b-4eef-ba9f-b8f12692db51';
-process.env.LUIS_SUBSCRIPTION_KEY = 'c01e068a748f45918abc029e69c1ffd4';
-
-// include winston logging
-var winston = require('winston');
-winston.level = 'debug';
-
 // include restify server
+// this is used to communicate with the ms bot framework middleware
 var restify = require('restify');
 
 // include ms botbuilder sdk
+// this will provide all functionality around bot workflows
 var builder = require('botbuilder');
 
 // include pinboard api
@@ -31,63 +25,64 @@ var Pinboard = require('node-pinboard');
 // https://www.npmjs.com/package/easypedia
 var easypedia = require("easypedia");
 
-// get app id and secret from server environment
+// setup restify server
+var server = restify.createServer();
+server.listen(3798, function () {
+    console.log('%s listening to %s', server.name, server.url);
+});
+
+// get app id and password from server environment
 // this avoids having to store the secret in code
 // you can manage it in the Azure dashboard
 // in settings -> application settings -> App settings
-var botConnectorOptions = {
-    appId: process.env.BOTFRAMEWORK_APPID,
-    appSecret: process.env.BOTFRAMEWORK_APPSECRET
-};
+var connector = new builder.ChatConnector({
+    appId: process.env.BOTFRAMEWORK_APP_ID,
+    appPassword: process.env.BOTFRAMEWORK_APP_PASSWORD
+});
 
 // pinboard credentials, see above
 var pinboardApiToken = process.env.PINBOARD_APITOKEN
 var pinboard = new Pinboard(pinboardApiToken);
 
-// create bot based on connector options defined above
-var bot = new builder.BotConnectorBot(botConnectorOptions);
+// create a universal bot based on the connector
+var bot = new builder.UniversalBot(connector);
 
-// event that new bot conversation has been started
-bot.on('BotAddedToConversation', function (listener) {
-    winston.info('# Initiated a new bot conversation with id ' + listener.id);
-});
+// handle bot framework messages
+// this is the endpoint you need to define in yout bot settings
+server.post('/api/messages', connector.listen());
 
-// create dialog based on LUIS app
-var dialog = new builder.LuisDialog('https://api.projectoxford.ai/luis/v1/application?id=' + process.env.LUIS_APP_ID + '&subscription-key=' + process.env.LUIS_SUBSCRIPTION_KEY);
-bot.add('/', dialog);
+// this creates a connection to the LUIS app
+var recognizer = new builder.LuisRecognizer(process.env.LUIS_APP_URL);
 
-// LUIS identified a link request intent
-dialog.on('Link', [
+// instead of dialogs, LUIS works with intents
+// you define these within your LUIS app, which will then used
+// as triggers for your app when LUIS identifies them
+var intents = new builder.IntentDialog({ recognizers: [recognizer] });
+
+// bind all dialogs to intents
+bot.dialog('/', intents);
+
+
+// recognised Link intent
+// this is trained to listen to all kinds of link requests
+// from "link something" to "show me a link about something"
+intents.matches('Link', [
     function (session, args, next) {
-        winston.info('# Identified link request');
-
         // extract entity from intent
         var task = builder.EntityRecognizer.findEntity(args.entities, 'Topic');
 
-        // the link should be included in the Link entity
-        if (!task) {
-            // if none was given, apologise and ask again
-            next({});
-        } else {
-            // jump to next stage in dialog to show result
-            next({ response: task.entity });
-        }
-    },
-    function (session, results) {
-        winston.info('# Identified link request with given entity');
-        if (results.response) {
+        // check if a topic has been identified to link
+        if (task.entity) {
             // this will get all bookmarks stored in the pinboard account
             // we also add the tag filter to only receive matching entries
-            pinboard.all({ tag: results.response }, function (err, res) {
+            pinboard.all({ tag: task.entity }, function (err, res) {
                 // check if a proper response came back
                 if (res) {
                     // check if the response actually contains posts
                     if (res.length > 0) {
-                        winston.info('# Found ' + res.length + ' entries');
-
                         // storing search term in user data
                         // this contains all search results and is used when the user requests another link from the results
-                        session.userData.search = results.response;
+                        session.userData.search = task.entity;
 
                         // reset current index
                         // this tracks which link the user currently sees
@@ -103,82 +98,27 @@ dialog.on('Link', [
                         resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
                         session.send(resultLink);
                     } else {
-                        winston.info('# Got a response, but it does not seem like there are posts');
+                        // no links found for topic
                         session.send('Hm, I don\'t think I have any link for that, sorry');
                     }
                 } else {
                     // something went wrong
-                    winston.info('# Response did throw an error: ' + err);
                     session.send('Oh, something went wrong (' + err + ')');
                 }
             });
         } else {
             // no entity, hence no topic to search a link for
-            winston.info('# Did not get an entity for this intent');
             session.send("Somehow I didn't get what you are looking for, sorry. Can you please try again?");
         }
     }
 ]);
 
 
-// LUIS identified a definition request intent
-dialog.on('Definition', [
-    function (session, args, next) {
-        winston.info('# Identified definition request');
-
-        winston.info(args.entities);
-
-        // extract entity from intent
-        var task = builder.EntityRecognizer.findEntity(args.entities, 'Topic');
-
-        // the link should be included in the Link entity
-        if (!task) {
-            // if none was given, apologise and ask again
-            next({});
-        } else {
-            // jump to next stage in dialog to show result
-            next({ response: task.entity });
-        }
-    },
-    function (session, results) {
-        winston.info('# Identified definition request with given entity');
-        if (results.response) {
-            // this will get info from wikipedia for the given query
-            easypedia(results.response, function (err, res) {
-                // check if a proper response came back
-                if (res) {
-                    // check if the response actually contains posts
-                    if (typeof res._text.Intro[0].text !== 'undefined') {
-                        winston.info('# Found wikipedia entry');
-
-                        // send wikipedia entry
-                        session.send(res._text.Intro[0].text);
-                    } else {
-                        winston.info('# Got a response, but it does not seem like there are posts');
-                        session.send('Hm, I don\'t think I have any link for that, sorry');
-                    }
-                } else {
-                    // something went wrong
-                    winston.info('# Response did throw an error: ' + err);
-                    session.send('Oh, something went wrong (' + err + ')');
-                }
-            });
-        } else {
-            // no entity, hence no topic to search a link for
-            winston.info('# Did not get an entity for this intent');
-            session.send("Somehow I didn't get what you are looking for, sorry. Can you please try again?");
-        }
-    }
-]);
-
-// LUIS identified intent for next link
-dialog.on('Next', [
-    function (session, args, next) {
-        next({});
-    },
-    function (session, results) {
-        winston.info('# Selecting next result. Current index ' + session.userData.searchResultIndex);
-
+// recognised Next intent
+// this is trained to listen to all kinds of link requests
+// from "link something" to "show me a link about something"
+intents.matches('Next', [
+    function (session, args, results) {
         if (typeof session.userData.searchResultIndex !== 'undefined') {
             // switch to next result
             if ((session.userData.searchResultIndex + 1) <= session.userData.searchResultList.length) {
@@ -195,64 +135,80 @@ dialog.on('Next', [
             resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
             session.send(resultLink);
         } else {
-            winston.info('# No results in the cache');
+            // no result found for index in cache
             session.send("Somehow I didn't get what you are looking for, sorry. Can you please try again?");
         }
     }
 ]);
 
-// LUIS identified a salutation intent
-// just say hi
-dialog.on('Salutation', [
+// recognised Definition intent
+// this is trained to listen to all kinds of definition requests
+// from "define something" to "what is something?"
+intents.matches('Definition', [
     function (session, args, next) {
-        next({});
-    },
-    function (session, results) {
-        winston.info('# Salutation intent');
-        session.send("Oh, hi. Nice to meet you!", results.response);
+        // extract entity from intent
+        var task = builder.EntityRecognizer.findEntity(args.entities, 'Topic');
+
+        // check if a topic has been identified to define
+        if (task.entity) {
+            // this will get info from wikipedia for the given query
+            easypedia(task.entity, function (err, res) {
+                // check if a proper response came back
+                if (res) {
+                    // check if the response actually contains posts
+                    if (typeof res._text.Intro[0].text !== 'undefined') {
+                        // send wikipedia entry
+                        session.send(res._text.Intro[0].text);
+                    } else {
+                        // no definition found for topic
+                        session.send('Hm, I don\'t think I have any link for that, sorry');
+                    }
+                } else {
+                    // something went wrong
+                    session.send('Oh, something went wrong (' + err + ')');
+                }
+            });
+        } else {
+            // no entity, hence no topic to search a link for
+            session.send("Somehow I didn't get what you are looking for, sorry. Can you please try again?");
+        }
     }
 ]);
 
-// LUIS identified a link request intent
-// just be nice
-dialog.on('Gratitude', [
+// recognised Salutation intent
+// this is trained to listen to all kinds of salutations
+// from "hi" to "hello"
+intents.matches('Salutation', [
     function (session, args, next) {
-        next({});
-    },
-    function (session, results) {
-        winston.info('# Gratitude intent');
-        session.send("You're welcome! Glad to be of help.", results.response);
+        // show a simple answer
+        session.send("Oh, hello! Nice to see you!");
     }
 ]);
 
-// LUIS identified a help request intent
-// show simple instructions
-dialog.on('Help', [
+// recognised Gratitude intent
+// this is trained to listen to all kinds of thank you messages
+// from "thanks" to "that was great!"
+intents.matches('Gratitude', [
     function (session, args, next) {
-        next({});
-    },
-    function (session, results) {
-        winston.info('# Help intent');
-        session.send("I can help you define things and get more information about them. For example say 'What is XYZ?' to get a overview of what it is. You can also say 'What do people say about XYZ?' to get some links about the topic.", results.response);
+        session.send("You're welcome! Glad to be of help.");
     }
 ]);
 
-// default action if no LUIS intent was found
-dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand. Can you please elaborate what you are looking for?"))
-
-// setup restify server
-var server = restify.createServer();
-
-// handle bot framework messages
-server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
+// recognised Help intent
+// this is trained to listen to all kinds of help requests
+// from "help" to "what can you do?"
+intents.matches('Help', [
+    function (session, args, next) {
+        session.send("I can help you define things and get more information about them. For example say 'What is XYZ?' to get a overview of what it is. You can also say 'What do people say about XYZ?' to get some links about the topic.");
+    }
+]);
 
 // serve a static web page as hello world confirmation
+// it also contains a web chat interface to this bot
+// note that to use the web chat, you need to add this endpoint
+// in the bot framework page and enter your webchat app secret
+// in the index.html
 server.get(/.*/, restify.serveStatic({
     'directory': '.',
     'default': 'index.html'
 }));
-
-// connect to the bot framework middleware
-server.listen(process.env.port || 3978, function () {
-    winston.info('# %s server is now listening on port %s', server.name, server.url);
-});

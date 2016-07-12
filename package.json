@@ -1,6 +1,6 @@
 {
   "name": "ee-slack-bot",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "This is an R&D bot that lives in the Emerging Experiences Slack team.",
   "main": "server.js",
   "scripts": {
@@ -8,16 +8,15 @@
   },
   "keywords": [
     "botframework",
-    "pinboard.in"
+    "bots"
   ],
-  "author": "Razorfish Emerging Experiences",
+  "author": "Dirk Songuer",
   "license": "MIT",
-  "homepage": "http://www.emergingexperiences.com/",
+  "homepage": "https://github.com/RazorfishGermany/ee-slack-bot",
   "dependencies": {
-    "botbuilder": "^1.0.1",
+    "botbuilder": "^3.0.1",
     "easypedia": "^4.0.1",
     "node-pinboard": "^1.0.0",
-    "restify": "^4.1.1",
-    "winston": "^2.2.0"
+    "restify": "^4.1.1"
   }
 }
