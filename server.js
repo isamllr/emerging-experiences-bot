@@ -16,7 +16,7 @@ var restify = require('restify');
 // include ms botbuilder sdk
 // this will provide all functionality around bot workflows
 var builder = require('botbuilder');
-/*
+
 // include pinboard api
 // https://www.npmjs.com/package/node-pinboard
 var Pinboard = require('node-pinboard');
@@ -24,13 +24,13 @@ var Pinboard = require('node-pinboard');
 // include wikipedia api
 // https://www.npmjs.com/package/easypedia
 var easypedia = require("easypedia");
-*/
+
 // setup restify server
 var server = restify.createServer();
 server.listen(3798, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
-/*
+
 // get app id and password from server environment
 // this avoids having to store the secret in code
 // you can manage it in the Azure dashboard
@@ -61,7 +61,6 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 
 // bind all dialogs to intents
 bot.dialog('/', intents);
-
 
 // recognised Link intent
 // this is trained to listen to all kinds of link requests
@@ -112,7 +111,6 @@ intents.matches('Link', [
         }
     }
 ]);
-
 
 // recognised Next intent
 // this is trained to listen to all kinds of link requests
@@ -202,7 +200,7 @@ intents.matches('Help', [
         session.send("I can help you define things and get more information about them. For example say 'What is XYZ?' to get a overview of what it is. You can also say 'What do people say about XYZ?' to get some links about the topic.");
     }
 ]);
-*/
+
 // serve a static web page as hello world confirmation
 // it also contains a web chat interface to this bot
 // note that to use the web chat, you need to add this endpoint

@@ -10,6 +10,10 @@
     "botframework",
     "bots"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/RazorfishGermany/ee-slack-bot.git"
+  },
   "author": "Dirk Songuer",
   "license": "MIT",
   "homepage": "https://github.com/RazorfishGermany/ee-slack-bot",
