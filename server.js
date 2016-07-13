@@ -62,6 +62,15 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 // bind all dialogs to intents
 bot.dialog('/', intents);
 
+// recognised Salutation intent
+// this is trained to listen to all kinds of salutations
+// from "hi" to "hello"
+intents.onDefault( [
+    function (session, args, next) {
+        // show a simple answer
+        session.send("I'm sorry, I didn't get what you mean. Could you please repeat that? If we haven't met, you can ask me for help to understand what I can do.");
+    }
+]);
 
 // recognised Link intent
 // this is trained to listen to all kinds of link requests

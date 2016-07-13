@@ -3,3 +3,4 @@
 /.ntvs_analysis.dat
 /._*
 node_modules
+debug.log
