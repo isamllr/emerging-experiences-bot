@@ -9,6 +9,10 @@
 // Author: Dirk Songuer (dirk.songuer@razorfish.de)
 // ************************************************ //
 
+// include winston logging
+var winston = require('winston');
+winston.level = 'error';
+
 // include restify server
 // this is used to communicate with the ms bot framework middleware
 var restify = require('restify');
@@ -32,7 +36,7 @@ var easypedia = require("easypedia");
 // setup restify server
 var server = restify.createServer();
 server.listen(process.env.port || 3798, function () {
-    console.log('%s listening to %s', server.name, server.url);
+    winston.info('%s listening to %s', server.name, server.url);
 });
 
 // get app id and password from server environment
@@ -160,6 +164,12 @@ intents.matches('Definition', [
             easypedia(task.entity, function (err, res) {
                 // check if a proper response came back
                 if (res) {
+                    // check if an actual wikipedia entry has been found
+                    // if not, put out a message
+                    if (res.categories.length == 0) {
+                        session.send("I'm sorry, but I don't know what this is. Is it important? I will look it up later.");
+                    }
+
                     // check if the response actually contains posts
                     if (typeof res._text.Intro[0].text !== 'undefined') {
                         // send wikipedia entry
