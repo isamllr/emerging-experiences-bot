@@ -25,13 +25,20 @@ var builder = require('botbuilder');
 // https://www.npmjs.com/package/node-pinboard
 var Pinboard = require('node-pinboard');
 
-// pinboard credentials, see above
+// pinboard credentials from server environment
 var pinboardApiToken = process.env.PINBOARD_APITOKEN
 var pinboard = new Pinboard(pinboardApiToken);
 
 // include wikipedia api
 // https://www.npmjs.com/package/easypedia
 var easypedia = require("easypedia");
+
+// pinterest api
+// https://www.npmjs.com/package/node-pinterest
+var PDK = require('node-pinterest');
+
+// pinterest credentials from server environment
+var pinterest = PDK.init(process.env.PINTEREST_APITOKEN);
 
 // setup restify server
 var server = restify.createServer();
@@ -196,6 +203,55 @@ intents.matches('Definition', [
     }
 ]);
 
+// recognised Inspiration intent
+// this is trained to listen to all kinds of inspiration requests
+// from "inspire me" to "show me some inspiration"
+intents.matches('Inspiration', [
+    function (session, args, next) {
+        // set options
+        // this will determine what kind of information will be handed back from pinterest
+        var options = {
+            qs: {
+                fields: "id,image,note,url,original_link"
+            }
+        };
+
+        // define some pinterest boards that have interesting pins
+        // select one at random to use as inspiration base
+        var pinterestBoards = ['williampurper/user-interface', 'inspirationfeed/user-interface', 'paulaalbino/user-interface', 'creativity-digital-art-inspiration'];
+        var randomBoard = Math.floor(Math.random() * pinterestBoards.length);
+
+        // make a call to the pinterest api
+        pinterest.api('boards/' + pinterestBoards[randomBoard] + '/pins', options).then(function (json) {
+            if (json) {
+                // select a random pin from the results
+                var randomInspiration = Math.floor(Math.random() * json.data.length);
+
+                // make sure we have all the necessary data
+                if ((typeof json.data[randomInspiration].note !== 'undefined') && (typeof json.data[randomInspiration].original_link !== 'undefined') && (typeof json.data[randomInspiration].image.original.url !== 'undefined')) {
+                    // send a card with the inspiration pin data
+                    var card = new builder.HeroCard(session)
+                        .text(json.data[randomInspiration].note)
+                        .buttons([
+                            builder.CardAction.openUrl(session, json.data[randomInspiration].original_link, 'Open in Browser')
+                        ])
+                        .images([
+                            builder.CardImage.create(session, json.data[randomInspiration].image.original.url)
+                        ]);
+                    var cardMessage = new builder.Message(session).attachments([card]);
+                    session.send(cardMessage);
+                } else {
+                    // no data
+                    session.send("Oh, something went wrong, sorry. Can you please try again?");
+                }
+            } else {
+                // no data
+                session.send("Oh, something went wrong, sorry. Can you please try again?");
+            }
+        });
+    }
+]);
+
 // recognised Salutation intent
 // this is trained to listen to all kinds of salutations
 // from "hi" to "hello"
@@ -215,12 +271,21 @@ intents.matches('Gratitude', [
     }
 ]);
 
+// recognised Wellbeing intent
+// this is trained to listen to all kinds of interactions around the
+// well-being of the bot from "how are you?" to "how do you feel today?"
+intents.matches('Wellbeing', [
+    function (session, args, next) {
+        session.send("I feel great, thank you! Although my server is quite slow sometimes -.-");
+    }
+]);
+
 // recognised Help intent
 // this is trained to listen to all kinds of help requests
 // from "help" to "what can you do?"
 intents.matches('Help', [
     function (session, args, next) {
-        session.send("I can help you define things and get more information about them. For example say 'What is XYZ?' to get a overview of what it is. You can also say 'What do people say about XYZ?' to get some links about the topic.");
+        session.send("I can help you define things and get more information about them. For example say 'What is XYZ?' to get a overview of what it is. You can also say 'What do people say about XYZ?' to get some links about the topic. Oh, and you can ask me for some inspiration :)");
     }
 ]);
 

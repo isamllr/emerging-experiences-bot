@@ -23,6 +23,7 @@
     "botbuilder": "^3.0.1",
     "easypedia": "^4.0.1",
     "node-pinboard": "^1.0.0",
+    "node-pinterest": "0.0.3",
     "restify": "^4.1.1",
     "winston": "^2.2.0"
   }
