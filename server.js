@@ -215,6 +215,15 @@ intents.matches('Gratitude', [
     }
 ]);
 
+// recognised Wellbeing intent
+// this is trained to listen to all kinds of interactions around the
+// well-being of the bot from "how are you?" to "how do you feel today?"
+intents.matches('Wellbeing', [
+    function (session, args, next) {
+        session.send("I feel great, thank you! Although my server is quite slow sometimes -.-");
+    }
+]);
+
 // recognised Help intent
 // this is trained to listen to all kinds of help requests
 // from "help" to "what can you do?"
