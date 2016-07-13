@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RazorfishGermany/ee-slack-bot.git"
+    "url": "git+https://github.com/RazorfishGermany/emerging-experiences-bot.git"
   },
   "keywords": [
     "botframework"
@@ -16,7 +16,7 @@
   "author": "Razorfish Emerging Experiences",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/RazorfishGermany/ee-slack-bot/issues"
+    "url": "https://github.com/RazorfishGermany/emerging-experiences-bot/issues"
   },
   "homepage": "http://www.emergingexperiences.com",
   "dependencies": {
