@@ -1,22 +1,24 @@
 {
-  "name": "ee-slack-bot",
+  "name": "emerging-experiences-bot",
   "version": "3.0.0",
-  "description": "This is an R&D bot that lives in the Emerging Experiences Slack team.",
+  "description": "This is an R&D bot that lives in the Emerging Experiences Slack and on other channels.",
   "main": "server.js",
   "scripts": {
     "test": ""
   },
-  "keywords": [
-    "botframework",
-    "bots"
-  ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/RazorfishGermany/ee-slack-bot.git"
+    "url": "git+https://github.com/RazorfishGermany/ee-slack-bot.git"
   },
-  "author": "Dirk Songuer",
+  "keywords": [
+    "botframework"
+  ],
+  "author": "Razorfish Emerging Experiences",
   "license": "MIT",
-  "homepage": "https://github.com/RazorfishGermany/ee-slack-bot",
+  "bugs": {
+    "url": "https://github.com/RazorfishGermany/ee-slack-bot/issues"
+  },
+  "homepage": "http://www.emergingexperiences.com",
   "dependencies": {
     "botbuilder": "^3.0.1",
     "easypedia": "^4.0.1",
