@@ -21,13 +21,17 @@ var builder = require('botbuilder');
 // https://www.npmjs.com/package/node-pinboard
 var Pinboard = require('node-pinboard');
 
+// pinboard credentials, see above
+var pinboardApiToken = process.env.PINBOARD_APITOKEN
+var pinboard = new Pinboard(pinboardApiToken);
+
 // include wikipedia api
 // https://www.npmjs.com/package/easypedia
 var easypedia = require("easypedia");
 
 // setup restify server
 var server = restify.createServer();
-server.listen(3798, function () {
+server.listen(process.env.port || 3798, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
@@ -39,10 +43,6 @@ var connector = new builder.ChatConnector({
     appId: process.env.BOTFRAMEWORK_APP_ID,
     appPassword: process.env.BOTFRAMEWORK_APP_PASSWORD
 });
-
-// pinboard credentials, see above
-var pinboardApiToken = process.env.PINBOARD_APITOKEN
-var pinboard = new Pinboard(pinboardApiToken);
 
 // create a universal bot based on the connector
 var bot = new builder.UniversalBot(connector);
@@ -62,13 +62,10 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 // bind all dialogs to intents
 bot.dialog('/', intents);
 
-// recognised Salutation intent
-// this is trained to listen to all kinds of salutations
-// from "hi" to "hello"
-intents.onDefault( [
+// recognised default intent
+intents.onDefault([
     function (session, args, next) {
-        // show a simple answer
-        session.send("I'm sorry, I didn't get what you mean. Could you please repeat that? If we haven't met, you can ask me for help to understand what I can do.");
+        session.send("Sorry, I didn't get that. Can you please try again?");
     }
 ]);
 
@@ -121,7 +118,6 @@ intents.matches('Link', [
         }
     }
 ]);
-
 
 // recognised Next intent
 // this is trained to listen to all kinds of link requests
