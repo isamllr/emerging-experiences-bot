@@ -105,7 +105,13 @@ intents.matches('Link', [
                         resultLink = 'How about ';
                         resultLink += res[0].href + "\n";
                         resultLink += res[0].description + "\n";
-                        resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
+
+                        // add pagination if more than one link was found
+                        if (session.userData.searchResultList.length > 1) {
+                            resultLink += '(More available: ' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
+                        }
+
+                        // send finished result
                         session.send(resultLink);
                     } else {
                         // no links found for topic
@@ -130,7 +136,7 @@ intents.matches('Next', [
     function (session, args, results) {
         if (typeof session.userData.searchResultIndex !== 'undefined') {
             // switch to next result
-            if ((session.userData.searchResultIndex + 1) <= session.userData.searchResultList.length) {
+            if ((session.userData.searchResultIndex + 1) < session.userData.searchResultList.length) {
                 session.userData.searchResultIndex += 1;
             } else {
                 session.userData.searchResultIndex = 0;
@@ -141,7 +147,7 @@ intents.matches('Next', [
             resultLink = 'How about ';
             resultLink += session.userData.searchResultList[session.userData.searchResultIndex].href + "\n";
             resultLink += session.userData.searchResultList[session.userData.searchResultIndex].description + "\n";
-            resultLink += '(' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
+            resultLink += '(More available: ' + (session.userData.searchResultIndex + 1) + '/' + session.userData.searchResultList.length + ')';
             session.send(resultLink);
         } else {
             // no result found for index in cache
