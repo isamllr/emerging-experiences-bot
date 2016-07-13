@@ -21,13 +21,17 @@ var builder = require('botbuilder');
 // https://www.npmjs.com/package/node-pinboard
 var Pinboard = require('node-pinboard');
 
+// pinboard credentials, see above
+var pinboardApiToken = process.env.PINBOARD_APITOKEN
+var pinboard = new Pinboard(pinboardApiToken);
+
 // include wikipedia api
 // https://www.npmjs.com/package/easypedia
 var easypedia = require("easypedia");
 
 // setup restify server
 var server = restify.createServer();
-server.listen(3798, function () {
+server.listen(process.env.port || 3798, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
@@ -39,10 +43,6 @@ var connector = new builder.ChatConnector({
     appId: process.env.BOTFRAMEWORK_APP_ID,
     appPassword: process.env.BOTFRAMEWORK_APP_PASSWORD
 });
-
-// pinboard credentials, see above
-var pinboardApiToken = process.env.PINBOARD_APITOKEN
-var pinboard = new Pinboard(pinboardApiToken);
 
 // create a universal bot based on the connector
 var bot = new builder.UniversalBot(connector);
@@ -62,6 +62,12 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] });
 // bind all dialogs to intents
 bot.dialog('/', intents);
 
+// recognised default intent
+intents.onDefault([
+    function (session, args, next) {
+        session.send("Sorry, I didn't get that. Can you please try again?");
+    }
+]);
 
 // recognised Link intent
 // this is trained to listen to all kinds of link requests
@@ -112,7 +118,6 @@ intents.matches('Link', [
         }
     }
 ]);
-
 
 // recognised Next intent
 // this is trained to listen to all kinds of link requests
