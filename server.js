@@ -11,7 +11,7 @@
 
 // include winston logging
 var winston = require('winston');
-winston.level = 'error';
+winston.level = 'debug';
 
 // include restify server
 // this is used to communicate with the ms bot framework middleware
@@ -218,7 +218,7 @@ intents.matches('Inspiration', [
 
         // define some pinterest boards that have interesting pins
         // select one at random to use as inspiration base
-        var pinterestBoards = ['williampurper/user-interface', 'inspirationfeed/user-interface', 'paulaalbino/user-interface', 'creativity-digital-art-inspiration'];
+        var pinterestBoards = ['williampurper/user-interface', 'inspirationfeed/user-interface', 'paulaalbino/user-interface'];
         var randomBoard = Math.floor(Math.random() * pinterestBoards.length);
 
         // make a call to the pinterest api
@@ -248,6 +248,8 @@ intents.matches('Inspiration', [
                 // no data
                 session.send("Oh, something went wrong, sorry. Can you please try again?");
             }
+        }).catch(function (err) {
+                session.send("Oh, something went wrong (" + err + "), sorry. Can you please try again?");
         });
     }
 ]);
